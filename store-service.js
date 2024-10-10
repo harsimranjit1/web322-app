@@ -6,28 +6,27 @@ let categories = [];
 
 module.exports.initialize = function() {
   return new Promise((resolve, reject) => {
-    const itemsFilePath = path.join(__dirname, "data", "items.json");  // Construct path for items.json
-    const categoriesFilePath = path.join(__dirname, "data", "categories.json");  // Construct path for categories.json
-
-    // Read the items.json file
+    const itemsFilePath = path.join(__dirname, "data", "items.json");  
+    const categoriesFilePath = path.join(__dirname, "data", "categories.json"); 
+   
     fs.readFile(itemsFilePath, "utf8", (err, data) => {
       if (err) {
         reject(`Unable to read items.json: ${err.message}`);
       } else {
         try {
-          items = JSON.parse(data);  // Parse the JSON data
+          items = JSON.parse(data);  
         } catch (e) {
           return reject(`Error parsing items.json: ${e.message}`);
         }
 
-        // Read the categories.json file
+        
         fs.readFile(categoriesFilePath, "utf8", (err, data) => {
           if (err) {
             reject(`Unable to read categories.json: ${err.message}`);
           } else {
             try {
-              categories = JSON.parse(data);  // Parse the JSON data
-              resolve();  // All files loaded successfully
+              categories = JSON.parse(data); 
+              resolve();  
             } catch (e) {
               reject(`Error parsing categories.json: ${e.message}`);
             }
