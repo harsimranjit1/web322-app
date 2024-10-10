@@ -3,9 +3,9 @@
 WEB322 – Assignment 02
 I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part *  of this assignment has been copied manually or electronically from any other source (including 3rd party web sites) or distributed to other students.
 
-Name: [Your Name]
-Student ID: [Your Student ID]
-Date: [Submission Date]
+Name:HARSIMRANJIT KAUR
+Student ID: 151966231
+Date: OCTOBER 9, 2024
 Cyclic Web App URL: [Your Cyclic URL]
 GitHub Repository URL: [Your GitHub URL]
 
@@ -27,7 +27,7 @@ app.get("/about", (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 
-// Initialize the store service and set up routes
+
 const storeService = require("./store-service");
 
 storeService.initialize().then(() => {
@@ -55,12 +55,12 @@ storeService.initialize().then(() => {
     });
   });
 
-  // Handle 404 Not Found
+
   app.use((req, res) => {
     res.status(404).send("Page Not Found");
   });
 
-  // Start the server
+
   app.listen(PORT, () => {
     console.log(`Express http server listening on port ${PORT}`);
   });
