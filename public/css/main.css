@@ -1,0 +1,123 @@
+/* main.css */
+
+/* General body styling */
+body {
+    font-family: 'Roboto', sans-serif; /* Google Font */
+    background-color: #f8f9fa; /* Light gray background */
+    color: #333; /* Dark text color */
+    padding-top: 90px; /* Account for fixed navbar */
+}
+
+/* Custom Navbar styling */
+.navbar {
+    background-color: #343a40; /* Dark background */
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #ffffff; /* White text */
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #007bff; /* Blue on hover */
+}
+
+/* Customizing the container */
+.container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff; /* White background for content */
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Styling for headings */
+h1, h2, h3 {
+    color: #007bff; /* Bootstrap's primary color */
+    margin-bottom: 20px;
+}
+
+/* Custom styles for right column (about section) */
+aside h2 {
+    color: #007bff;
+}
+
+aside p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #666; /* Lighter gray text */
+}
+
+/* Left column content */
+section h2 {
+    color: #007bff;
+}
+
+section p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Footer styling */
+footer {
+    background-color: #343a40;
+    color: #ffffff;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Button styling */
+.btn-custom {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Make images responsive */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Customizing forms */
+form input, form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+form input:focus, form textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Style for error or success messages */
+.alert {
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
