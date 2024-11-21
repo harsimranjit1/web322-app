@@ -1,0 +1,28 @@
+<h1>Shop</h1>
+
+<!-- Categories -->
+{{#if categories}}
+  <h2>Categories</h2>
+  <ul>
+    {{#each categories}}
+      <li><a href="/shop?category={{id}}">{{name}}</a></li>
+    {{/each}}
+  </ul>
+{{/if}}
+
+
+{{#if posts}}
+  <div>
+    {{#each posts}}
+      <div>
+        <h3>{{title}}</h3>
+        <img src="{{featureImage}}" alt="{{title}}" style="max-width: 100%;">
+        <p>{{body}}</p>
+        <a href="/shop/{{id}}?category={{../viewingCategory}}">Read More</a>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+
+  <p>{{message}}</p>
+{{/if}}
