@@ -3,18 +3,19 @@
 
 
 .navbar {
-    background-color: #343a40;
+    background-color: #343a40; 
 }
 
 .navbar-brand {
     font-weight: bold;
     color: #ffffff; 
 }
+
 body {
     font-family: 'Roboto', sans-serif; 
     background-color: #f8f9fa; 
     color: #333; 
-    padding-top: 90px;
+    padding-top: 90px; 
 }
 .navbar-nav .nav-link {
     color: #ffffff;
@@ -34,24 +35,22 @@ body {
 }
 
 
-
-aside h2 {
-    color: #007bff;
-}
-
-
-
-aside p {
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #666; 
-}
-
 h1, h2, h3 {
     color: #007bff;
     margin-bottom: 20px;
 }
 
+
+aside h2 {
+    color: #007bff;
+}
+
+aside p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #666; 
+
+}
 section h2 {
     color: #007bff;
 }
@@ -62,6 +61,25 @@ section p {
     margin-bottom: 15px;
 }
 
+
+
+.btn-custom:hover {
+    background-color: #0056b3; 
+
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+form input:focus, form textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
 
 footer {
     background-color: #343a40;
@@ -85,37 +103,17 @@ img {
     max-width: 100%;
     height: auto;
 }
-.btn-custom:hover {
-    background-color: #0056b3; 
-}
-
-
-form input, form textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
+.alert {
+    padding: 15px;
+    margin-top: 10px;
     border-radius: 5px;
 }
-
-form input:focus, form textarea:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-
 
 .alert-success {
     background-color: #d4edda;
     color: #155724;
 }
 
-
-.alert {
-    padding: 15px;
-    margin-top: 10px;
-    border-radius: 5px;
-}
 .alert-error {
     background-color: #f8d7da;
     color: #721c24;
