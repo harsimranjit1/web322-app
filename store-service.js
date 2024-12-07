@@ -2,10 +2,11 @@ const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: 'localhost', // or your database URL
-  username: 'your_username',
-  password: 'your_password',
-  database: 'your_database',
+  host: '    host: 'ep-rapid-feather-a5i349k5.us-east-2.aws.neon.tech',
+', 
+  username: 'SenecaDB_owner',
+  password: 'MT31DYRWCqpo',
+  database: 'SenecaDB',
 });
 
 sequelize.authenticate()
