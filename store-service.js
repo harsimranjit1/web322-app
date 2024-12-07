@@ -1,12 +1,13 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize({
-  dialect: 'postgres',
-  host: '    host: 'ep-rapid-feather-a5i349k5.us-east-2.aws.neon.tech',
-', 
-  username: 'SenecaDB_owner',
-  password: 'MT31DYRWCqpo',
-  database: 'SenecaDB',
+const sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', 'MT31DYRWCqpo', {
+    host: 'ep-rapid-feather-a5i349k5.us-east-2.aws.neon.tech',
+    dialect: 'postgres',
+    port: 5432,
+    dialectOptions: {
+        ssl: { rejectUnauthorized: false }
+    },
+    query: { raw: true }
 });
 
 sequelize.authenticate()
