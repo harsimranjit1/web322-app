@@ -1,0 +1,23 @@
+<h2>Categories</h2>
+{{#if categories}}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each categories}}
+                <tr>
+                    <td>{{this.id}}</td>
+                    <td>{{this.category}}</td>
+                    <td><a href="/categories/delete/{{this.id}}" class="btn btn-danger">Remove</a></td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+{{else}}
+    <p>No categories available.</p>
+{{/if}}

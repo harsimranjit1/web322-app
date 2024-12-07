@@ -1,0 +1,29 @@
+<h1>Shop</h1>
+
+<!-- Categories Filter -->
+{{#if categories}}
+    <h2>Categories</h2>
+    <ul>
+        {{#each categories}}
+            <li><a href="/shop?category={{id}}">{{category}}</a></li>
+        {{/each}}
+    </ul>
+{{else}}
+    <p>No categories available.</p>
+{{/if}}
+
+<!-- Items List -->
+{{#if posts}}
+    <div>
+        {{#each posts}}
+            <div>
+                <h3>{{title}}</h3>
+                <img src="{{featureImage}}" alt="{{title}}" style="max-width: 100%;">
+                <p>{{body}}</p>
+                <a href="/shop/{{id}}?category={{../viewingCategory}}">Read More</a>
+            </div>
+        {{/each}}
+    </div>
+{{else}}
+    <p>{{message}}</p>
+{{/if}}

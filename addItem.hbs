@@ -1,0 +1,25 @@
+<h2>Add Item</h2>
+<form method="POST" action="/items/add">
+    <div class="form-group">
+        <label for="title">Item Name:</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="form-group">
+        <label for="price">Price:</label>
+        <input type="text" class="form-control" id="price" name="price" required>
+    </div>
+    <div class="form-group">
+        <label for="category">Category:</label>
+        {{#if categories}}
+            <select class="form-control" name="category" id="category">
+                <option value="">Select Category</option>
+                {{#each categories}}
+                    <option value="{{id}}">{{category}}</option>
+                {{/each}}
+            </select>
+        {{else}}
+            <p>No categories available</p>
+        {{/if}}
+    </div>
+    <button type="submit" class="btn btn-primary">Add Item</button>
+</form>
