@@ -1,16 +1,20 @@
 const Sequelize = require('sequelize');
 
-// Replace these values with your actual ElephantSQL credentials
-const sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', 'MT31DYRWCqpo', {
-    host: 'ep-rapid-feather-a5i349k5.us-east-2.aws.neon.tech',
-    dialect: 'postgres',
-    port: 5432,
-    dialectOptions: {
-        ssl: { rejectUnauthorized: false }
-    },
-    query: { raw: true }
+const sequelize = new Sequelize({
+  dialect: 'postgres',
+  host: 'localhost', // or your database URL
+  username: 'your_username',
+  password: 'your_password',
+  database: 'your_database',
 });
 
+sequelize.authenticate()
+  .then(() => {
+    console.log('Database connection established');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 // Define Item and Category models
 const Item = sequelize.define('Item', {
     body: Sequelize.TEXT,
