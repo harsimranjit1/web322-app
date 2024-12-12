@@ -40,7 +40,7 @@ module.exports.initialize = function () {
 // Get all items
 module.exports.getAllItems = function () {
     return new Promise((resolve, reject) => {
-        Item.findAll()
+        Item.findAll({ include: Category })  // Include category to fetch associated category data
             .then(data => resolve(data))
             .catch(() => reject("No results returned"));
     });
@@ -49,7 +49,7 @@ module.exports.getAllItems = function () {
 // Get items by category
 module.exports.getItemsByCategory = function (category) {
     return new Promise((resolve, reject) => {
-        Item.findAll({ where: { category: category } })
+        Item.findAll({ where: { category: category }, include: Category })
             .then(data => resolve(data))
             .catch(() => reject("No results found for this category"));
     });
@@ -58,7 +58,7 @@ module.exports.getItemsByCategory = function (category) {
 // Get item by ID
 module.exports.getItemById = function (id) {
     return new Promise((resolve, reject) => {
-        Item.findByPk(id)
+        Item.findByPk(id, { include: Category })
             .then(data => resolve(data))
             .catch(() => reject("Item not found"));
     });
