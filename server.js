@@ -1,29 +1,44 @@
 /*********************************************************************************
-*  WEB322 – Assignment 05
-*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part of this
-*  assignment has been copied manually or electronically from any other source (including web sites) or 
-*  distributed to other students.
+*  WEB322 – Assignment 06
+*  I declare that this assignment is my own work in accordance with Seneca Academic Policy.  
+*  No part of this assignment has been copied manually or electronically from any other source 
+*  (including web sites) or distributed to other students.
 * 
 *  Name: HARSIMRANJIT KAUR
- Student ID: 151966231
- Date: DEC 6,2024
+*  Student ID: 151966231
+*  Date: DEC 6, 2024
 *  Cyclic Web App URL: ________________________________________________________
-*
 *  GitHub Repository URL: ______________________________________________________
-*
-********************************************************************************/ 
-
+********************************************************************************/
 
 const express = require("express");
 const path = require("path");
 const exphbs = require("express-handlebars");
+const clientSessions = require("client-sessions");
 const storeService = require("./store-service");
+const authData = require("./auth-service");
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// Middleware for parsing form data
 app.use(express.urlencoded({ extended: true }));
 
-// Handlebars Setup
+// Configure client-sessions
+app.use(clientSessions({
+    cookieName: "session",
+    secret: "your-secret-key",
+    duration: 24 * 60 * 60 * 1000, // 1 day
+    activeDuration: 1000 * 60 * 5 // Extend by 5 minutes if active
+}));
+
+// Middleware to make session data available to templates
+app.use((req, res, next) => {
+    res.locals.session = req.session;
+    next();
+});
+
+// Handlebars setup
 app.engine(".hbs", exphbs.engine({
     extname: ".hbs",
     helpers: {
@@ -33,14 +48,11 @@ app.engine(".hbs", exphbs.engine({
             let day = dateObj.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
         },
-
-        // navLink helper for active navigation link
         navLink: function (url, options) {
             return `<li class="${url === app.locals.activeRoute ? 'active' : ''}">
                 <a href="${url}">${options.fn(this)}</a>
             </li>`;
         },
-
         equal: function (lvalue, rvalue, options) {
             return lvalue === rvalue ? options.fn(this) : options.inverse(this);
         }
@@ -48,18 +60,65 @@ app.engine(".hbs", exphbs.engine({
 }));
 app.set("view engine", ".hbs");
 
+// Custom middleware to protect routes
+function ensureLogin(req, res, next) {
+    if (!req.session.user) {
+        res.redirect("/login");
+    } else {
+        next();
+    }
+}
+
 // Routes
 app.get("/about", (req, res) => {
     res.render("about");
 });
+
+// Authentication routes
+app.get("/register", (req, res) => {
+    res.render("register");
+});
+
+app.post("/register", (req, res) => {
+    authData.registerUser(req.body)
+        .then(() => res.render("register", { successMessage: "User created" }))
+        .catch(err => res.render("register", { errorMessage: err, userName: req.body.userName }));
+});
+
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+app.post("/login", (req, res) => {
+    req.body.userAgent = req.get("User-Agent");
+    authData.checkUser(req.body)
+        .then(user => {
+            req.session.user = {
+                userName: user.userName,
+                email: user.email,
+                loginHistory: user.loginHistory
+            };
+            res.redirect("/items");
+        })
+        .catch(err => res.render("login", { errorMessage: err, userName: req.body.userName }));
+});
+
+app.get("/logout", (req, res) => {
+    req.session.reset();
+    res.redirect("/");
+});
+
+app.get("/userHistory", ensureLogin, (req, res) => {
+    res.render("userHistory", { user: req.session.user });
+});
+
+// Store routes
 app.get("/shop", (req, res) => {
-    const category = req.query.category;  // Get the category from the query string
-
+    const category = req.query.category;
     let postsPromise = category
-        ? storeService.getItemsByCategory(category)  // Get items filtered by category
-        : storeService.getAllItems();  // Get all items if no category is selected
-
-    let categoriesPromise = storeService.getCategories();  // Get all categories for the filter
+        ? storeService.getItemsByCategory(category)
+        : storeService.getAllItems();
+    let categoriesPromise = storeService.getCategories();
 
     Promise.all([postsPromise, categoriesPromise])
         .then(([posts, categories]) => {
@@ -82,17 +141,17 @@ app.get("/", (req, res) => {
     res.redirect("/items");
 });
 
-app.get("/items", (req, res) => {
+app.get("/items", ensureLogin, (req, res) => {
     storeService.getAllItems()
         .then(data => {
             res.render("items", { items: data.length > 0 ? data : null, message: data.length === 0 ? "No results found." : null });
         })
-        .catch(err => {
+        .catch(() => {
             res.render("items", { message: "No results" });
         });
 });
 
-app.get("/categories", (req, res) => {
+app.get("/categories", ensureLogin, (req, res) => {
     storeService.getCategories()
         .then(data => {
             res.render("categories", { categories: data });
@@ -102,51 +161,14 @@ app.get("/categories", (req, res) => {
         });
 });
 
-app.get("/categories/add", (req, res) => {
-    res.render("addCategory");
-});
-
-app.post("/categories/add", (req, res) => {
-    storeService.addCategory(req.body)
-        .then(() => res.redirect("/categories"))
-        .catch(err => res.status(500).send("Error adding category: " + err));
-});
-
-app.get("/categories/delete/:id", (req, res) => {
-    storeService.deleteCategoryById(req.params.id)
-        .then(() => res.redirect("/categories"))
-        .catch(() => res.status(500).send("Unable to remove category / Category not found"));
-});
-
-app.get("/items/add", (req, res) => {
-    storeService.getCategories()
-        .then(categories => {
-            res.render("addItem", { categories: categories });
-        })
-        .catch(() => {
-            res.render("addItem", { categories: [] });
-        });
-});
-
-app.post("/items/add", (req, res) => {
-    storeService.addItem(req.body)
-        .then(() => res.redirect("/items"))
-        .catch(err => res.status(500).send("Error adding item: " + err));
-});
-
-app.get("/items/delete/:id", (req, res) => {
-    storeService.deletePostById(req.params.id)
-        .then(() => res.redirect("/items"))
-        .catch(() => res.status(500).send("Unable to remove item / Item not found"));
-});
-
-// Initialize the app
+// Initialize services
 storeService.initialize()
+    .then(authData.initialize)
     .then(() => {
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });
     })
     .catch(err => {
-        console.error("Failed to initialize store service: ", err);
+        console.error("Failed to initialize services: ", err);
     });

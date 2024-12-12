@@ -34,6 +34,27 @@
                         <li class="nav-item">
                             {{#navLink "/categories"}}Categories{{/navLink}}
                         </li>
+
+                        <!-- Conditional Rendering for Authenticated/Unauthenticated Users -->
+                        {{#if session.user}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="glyphicon glyphicon-user"></span>
+                                {{session.user.userName}}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/userHistory">User History</a></li>
+                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                        {{else}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                        {{/if}}
                     </ul>
                 </div>
             </div>

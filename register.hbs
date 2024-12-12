@@ -1,0 +1,36 @@
+{{#if errorMessage}}
+<div class="alert alert-danger">
+    <strong>Error:</strong> {{errorMessage}}
+</div>
+{{/if}}
+
+{{#if successMessage}}
+<div class="alert alert-success">
+    <strong>Success:</strong> {{successMessage}}
+</div>
+<a href="/login" class="btn btn-success">Proceed to Login</a>
+{{else}}
+<form action="/register" method="POST">
+    <div class="form-group">
+        <label for="userName">User Name</label>
+        <input type="text" name="userName" id="userName" class="form-control" placeholder="User Name" value="{{userName}}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+    </div>
+
+    <div class="form-group">
+        <label for="password2">Confirm Password</label>
+        <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirm Password" required>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Email Address" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+{{/if}}

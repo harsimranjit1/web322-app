@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize');
 
+// Set up the Sequelize connection to PostgreSQL (in this case, your ElephantSQL or other PostgreSQL databases)
 const sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', 'MT31DYRWCqpo', {
-    host: 'ep-rapid-feather-a5i349k5.us-east-2.aws.neon.tech',
+    host: 'ep-rapid-feather-a5i349k5.us-east-2.aws.neon.tech',  // Your ElephantSQL hostname
     dialect: 'postgres',
     port: 5432,
     dialectOptions: {
@@ -10,13 +11,6 @@ const sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', 'MT31DYRWCqpo', {
     query: { raw: true }
 });
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('Database connection established');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
 // Define Item and Category models
 const Item = sequelize.define('Item', {
     body: Sequelize.TEXT,
@@ -34,6 +28,7 @@ const Category = sequelize.define('Category', {
 // Define relationship
 Item.belongsTo(Category, { foreignKey: 'category' });
 
+// Initialize function for Sequelize
 module.exports.initialize = function () {
     return new Promise((resolve, reject) => {
         sequelize.sync({ force: false })  // Don't drop tables
@@ -60,18 +55,6 @@ module.exports.getItemsByCategory = function (category) {
     });
 };
 
-// Get items by min date
-module.exports.getItemsByMinDate = function (minDateStr) {
-    return new Promise((resolve, reject) => {
-        const { gte } = Sequelize.Op;
-        Item.findAll({
-            where: { postDate: { [gte]: new Date(minDateStr) } }
-        })
-            .then(data => resolve(data))
-            .catch(() => reject("No results found for this date"));
-    });
-};
-
 // Get item by ID
 module.exports.getItemById = function (id) {
     return new Promise((resolve, reject) => {
@@ -87,6 +70,7 @@ module.exports.addItem = function (itemData) {
         itemData.published = itemData.published ? true : false;
         itemData.postDate = new Date();
 
+        // Replace empty fields with null
         for (let key in itemData) {
             if (itemData[key] === "") {
                 itemData[key] = null;
@@ -96,15 +80,6 @@ module.exports.addItem = function (itemData) {
         Item.create(itemData)
             .then(() => resolve(itemData))
             .catch(err => reject("Unable to create item: " + err));
-    });
-};
-
-// Delete item by ID
-module.exports.deletePostById = function (id) {
-    return new Promise((resolve, reject) => {
-        Item.destroy({ where: { id: id } })
-            .then(() => resolve())
-            .catch(() => reject("Unable to remove item / Item not found"));
     });
 };
 
@@ -138,5 +113,14 @@ module.exports.deleteCategoryById = function (id) {
         Category.destroy({ where: { id: id } })
             .then(() => resolve())
             .catch(() => reject("Unable to remove category / Category not found"));
+    });
+};
+
+// Delete item by ID
+module.exports.deletePostById = function (id) {
+    return new Promise((resolve, reject) => {
+        Item.destroy({ where: { id: id } })
+            .then(() => resolve())
+            .catch(() => reject("Unable to remove item / Item not found"));
     });
 };

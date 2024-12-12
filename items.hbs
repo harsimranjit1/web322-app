@@ -1,45 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Items</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <h1>Items List</h1>
+<h1>Items</h1>
 
-    {{#if items}}
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Post Date</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Published</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each items}}
-                        <tr>
-                            <td>{{id}}</td>
-                            <td>{{title}}</td>
-                            <td>{{formatDate postDate}}</td> <!-- Formatting the postDate -->
-                            <td><a href="/items?category={{category.id}}">{{category.category}}</a></td> <!-- Updated category reference -->
-                            <td>{{#if price}}$ {{price}}{{else}}N/A{{/if}}</td> <!-- Price formatting -->
-                            <td>{{#if published}}Yes{{else}}No{{/if}}</td>
-                        </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-    {{else}}
-        <p>No items available.</p>
-    {{/if}}
+{{#if message}}
+    <div class="alert alert-info">{{message}}</div>
+{{/if}}
 
-    <a href="/items/add">Add New Item</a>
-</body>
-</html>
+{{#if items}}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each items}}
+                <tr>
+                    <td>{{this.title}}</td>
+                    <td>${{this.price}}</td>
+                    <td>{{this.category}}</td>
+                    <td>
+                        <a href="/items/delete/{{this.id}}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+{{else}}
+    <p>No items available.</p>
+{{/if}}

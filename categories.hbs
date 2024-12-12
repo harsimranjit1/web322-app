@@ -1,19 +1,24 @@
-<h2>Categories</h2>
+<h1>Categories</h1>
+
+{{#if message}}
+    <div class="alert alert-info">{{message}}</div>
+{{/if}}
+
 {{#if categories}}
     <table class="table">
         <thead>
             <tr>
-                <th>Category ID</th>
                 <th>Category Name</th>
-                <th></th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {{#each categories}}
                 <tr>
-                    <td>{{this.id}}</td>
                     <td>{{this.category}}</td>
-                    <td><a href="/categories/delete/{{this.id}}" class="btn btn-danger">Remove</a></td>
+                    <td>
+                        <a href="/categories/delete/{{this.id}}" class="btn btn-danger">Delete</a>
+                    </td>
                 </tr>
             {{/each}}
         </tbody>
