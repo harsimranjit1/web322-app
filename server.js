@@ -1,33 +1,18 @@
-/*********************************************************************************
-*  WEB322 – Assignment 06
-*  I declare that this assignment is my own work in accordance with Seneca Academic Policy.  
-*  No part of this assignment has been copied manually or electronically from any other source 
-*  (including web sites) or distributed to other students.
-* 
-*  Name: HARSIMRANJIT KAUR
-*  Student ID: 151966231
-*  Date: DEC 6, 2024
-*  Cyclic Web App URL: ________________________________________________________
-*  GitHub Repository URL: ______________________________________________________
-********************************************************************************/
-
 const express = require("express");
 const path = require("path");
 const exphbs = require("express-handlebars");
 const clientSessions = require("client-sessions");
 const storeService = require("./store-service");
-const authData = require("./auth-service");
-
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Middleware for parsing form data
 app.use(express.urlencoded({ extended: true }));
 
-// Configure client-sessions
+// Set up client-sessions middleware
 app.use(clientSessions({
     cookieName: "session",
-    secret: "your-secret-key",
+    secret: "your-secret-key", // Change to your secret key
     duration: 24 * 60 * 60 * 1000, // 1 day
     activeDuration: 1000 * 60 * 5 // Extend by 5 minutes if active
 }));
@@ -69,26 +54,72 @@ function ensureLogin(req, res, next) {
     }
 }
 
-// Routes
-app.get("/about", (req, res) => {
-    res.render("about");
+// Route for the homepage
+app.get("/", (req, res) => {
+    res.redirect("/items");
 });
 
-// Authentication routes
+// Route for the Items page
+app.get("/items", ensureLogin, (req, res) => {
+    storeService.getAllItems()
+        .then(data => {
+            res.render("items", {
+                items: data.length > 0 ? data : null,
+                message: data.length === 0 ? "No results found." : null
+            });
+        })
+        .catch(err => {
+            res.render("items", { message: "No results" });
+        });
+});
+
+// Route for the Categories page
+app.get("/categories", ensureLogin, (req, res) => {
+    storeService.getCategories()
+        .then(data => {
+            res.render("categories", { categories: data });
+        })
+        .catch(() => {
+            res.render("categories", { message: "No categories available" });
+        });
+});
+
+// Route for Add Item page
+app.get("/items/add", ensureLogin, (req, res) => {
+    storeService.getCategories()
+        .then(categories => {
+            res.render("addItem", { categories: categories });
+        })
+        .catch(() => {
+            res.render("addItem", { categories: [] });
+        });
+});
+
+// Handle Add Item form submission
+app.post("/items/add", ensureLogin, (req, res) => {
+    storeService.addItem(req.body)
+        .then(() => res.redirect("/items"))
+        .catch(err => res.status(500).send("Error adding item: " + err));
+});
+
+// Route for the Login page
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+// Route for Register page
 app.get("/register", (req, res) => {
     res.render("register");
 });
 
+// Handle user registration
 app.post("/register", (req, res) => {
     authData.registerUser(req.body)
         .then(() => res.render("register", { successMessage: "User created" }))
         .catch(err => res.render("register", { errorMessage: err, userName: req.body.userName }));
 });
 
-app.get("/login", (req, res) => {
-    res.render("login");
-});
-
+// Handle user login
 app.post("/login", (req, res) => {
     req.body.userAgent = req.get("User-Agent");
     authData.checkUser(req.body)
@@ -103,72 +134,19 @@ app.post("/login", (req, res) => {
         .catch(err => res.render("login", { errorMessage: err, userName: req.body.userName }));
 });
 
+// Handle user logout
 app.get("/logout", (req, res) => {
     req.session.reset();
     res.redirect("/");
 });
 
-app.get("/userHistory", ensureLogin, (req, res) => {
-    res.render("userHistory", { user: req.session.user });
-});
-
-// Store routes
-app.get("/shop", (req, res) => {
-    const category = req.query.category;
-    let postsPromise = category
-        ? storeService.getItemsByCategory(category)
-        : storeService.getAllItems();
-    let categoriesPromise = storeService.getCategories();
-
-    Promise.all([postsPromise, categoriesPromise])
-        .then(([posts, categories]) => {
-            res.render("shop", {
-                posts: posts,
-                categories: categories,
-                message: posts.length === 0 ? "No items available in this category" : null
-            });
-        })
-        .catch(() => {
-            res.render("shop", {
-                posts: null,
-                categories: [],
-                message: "Error fetching items or categories"
-            });
-        });
-});
-
-app.get("/", (req, res) => {
-    res.redirect("/items");
-});
-
-app.get("/items", ensureLogin, (req, res) => {
-    storeService.getAllItems()
-        .then(data => {
-            res.render("items", { items: data.length > 0 ? data : null, message: data.length === 0 ? "No results found." : null });
-        })
-        .catch(() => {
-            res.render("items", { message: "No results" });
-        });
-});
-
-app.get("/categories", ensureLogin, (req, res) => {
-    storeService.getCategories()
-        .then(data => {
-            res.render("categories", { categories: data });
-        })
-        .catch(() => {
-            res.render("categories", { message: "No categories available" });
-        });
-});
-
-// Initialize services
+// Initialize the app and sync with the database
 storeService.initialize()
-    .then(authData.initialize)
     .then(() => {
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });
     })
     .catch(err => {
-        console.error("Failed to initialize services: ", err);
+        console.error("Failed to initialize store service: ", err);
     });
